@@ -1,5 +1,5 @@
-# 2D Canvas starter template
-A starter template for 2d canvas based intro screens
+# 3D Canvas starter template
+A starter template for Three.JS based intro screens
 
 
 ## Yarn
