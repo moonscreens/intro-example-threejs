@@ -63,12 +63,14 @@ function draw() {
     for (let index = emoteArray.length-1; index >= 0; index--) {
         const element = emoteArray[index];
 
+	// Emotes will travel either towards or away from the camera as a basic example
         if (index % 2) {
             element.position.z += delta;
         } else {
             element.position.z -= delta;
         }
         
+	// Remove a given set of emotes after 10 seconds have passed
         if (element.dateSpawned < Date.now() - 10000) {
             scene.remove(element);
             emoteArray.splice(index, 1);
@@ -92,14 +94,15 @@ ChatInstance.on("emotes", (emotes) => {
     for (let index = 0; index < emotes.length; index++) {
         const emote = emotes[index];
 
+	// cache textures/materials to save on GPU bandwidth, otherwise a material would need to be generated for every unique use of the same emote
         if (!emoteTextures[emote.id]) {
             emoteSources[emote.id] = emote;
             emoteTextures[emote.id] = new THREE.CanvasTexture(emote.gif.canvas);
             emoteTextures[emote.id].emote = emote;
+	    
+	    // Feel free to change this from a nearest neighbor upsampling method to match your visual style
             emoteTextures[emote.id].magFilter = THREE.NearestFilter;
-            setTimeout(() => {
-                emoteTextures[emote.id].needsUpdate = true;
-            }, 1000);
+
             emoteMaterials[emote.id] = new THREE.SpriteMaterial({
                 map: emoteTextures[emote.id],
                 transparent: true,
