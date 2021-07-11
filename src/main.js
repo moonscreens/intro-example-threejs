@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import Chat from 'twitch-chat-emotes';
 
 // a default array of twitch channels to join
@@ -8,6 +9,7 @@ const query_vars = {};
 const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
     query_vars[key] = value;
 });
+
 if (query_vars.channels) {
     channels = query_vars.channels.split(',');
 }
@@ -16,55 +18,100 @@ if (query_vars.channels) {
 const ChatInstance = new Chat({
     channels,
     duplicateEmoteLimit: 5,
-})
+});
 
-const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
-const ctx = canvas.getContext('2d');
+const emoteSources = {};
+const emoteTextures = {};
+const emoteMaterials = {};
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+camera.position.z = 10;
+
+const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({
+    antialias: false,
+    alpha: false
+});
+document.body.appendChild(renderer.domElement);
 
 
 function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 }
 resize();
 window.addEventListener('resize', resize);
 
 
+let lastFrame = Date.now();
 // Called once per frame
 function draw() {
     window.requestAnimationFrame(draw);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // number of seconds since the last frame was drawn
+    const delta = (Date.now() - lastFrame) / 1000;
 
-    for (let o = emoteArray.length - 1; o >= 0; o--) {
-        const emoteGroup = emoteArray[o];
+    // update materials for animated emotes
+	for (const key in emoteMaterials) {
+		if (Object.hasOwnProperty.call(emoteMaterials, key)) {
+			emoteMaterials[key].needsUpdate = true;
+			emoteTextures[key].needsUpdate = true;
+		}
+	}
 
-        // Keep track of where we should be drawing the next emote per message
-        let xOffset = 0;
+    for (let index = emoteArray.length-1; index >= 0; index--) {
+        const element = emoteArray[index];
 
-        for (let i = 0; i < emoteGroup.emotes.length; i++) {
-            const emote = emoteGroup.emotes[i];
-            ctx.drawImage(emote.gif.canvas, xOffset + emoteGroup.x, emoteGroup.y);
-            xOffset = emote.gif.canvas.width;
+        if (index % 2) {
+            element.position.z += delta;
+        } else {
+            element.position.z -= delta;
         }
-
-        // Delete a group after 10 seconds
-        if (emoteGroup.spawn < Date.now() - 10000) {
-            emoteArray.splice(o, 1);
+        
+        if (element.dateSpawned < Date.now() - 10000) {
+            scene.remove(element);
+            emoteArray.splice(index, 1);
         }
     }
+
+    renderer.render(scene, camera);
+
+    lastFrame = Date.now();
 }
 
 // add a callback function for when a new message with emotes is sent
 const emoteArray = [];
 ChatInstance.on("emotes", (emotes) => {
-    emoteArray.push({
-        emotes,
-        x: Math.floor(Math.random() * canvas.width),
-        y: Math.floor(Math.random() * canvas.height),
-        spawn: Date.now()
-    });
+    const group = new THREE.Group();
+
+    group.position.x = Math.random() * 5 - 2.5,
+    group.position.y = Math.random() * 5 - 2.5,
+    group.dateSpawned = Date.now()
+
+    for (let index = 0; index < emotes.length; index++) {
+        const emote = emotes[index];
+
+        if (!emoteTextures[emote.id]) {
+            emoteSources[emote.id] = emote;
+            emoteTextures[emote.id] = new THREE.CanvasTexture(emote.gif.canvas);
+            emoteTextures[emote.id].emote = emote;
+            emoteTextures[emote.id].magFilter = THREE.NearestFilter;
+            setTimeout(() => {
+                emoteTextures[emote.id].needsUpdate = true;
+            }, 1000);
+            emoteMaterials[emote.id] = new THREE.SpriteMaterial({
+                map: emoteTextures[emote.id],
+                transparent: true,
+            });
+        }
+        const sprite = new THREE.Sprite(emoteMaterials[emote.id]);
+        sprite.position.x = index;
+
+        group.add(sprite);
+    }
+    scene.add(group);
+    emoteArray.push(group);
 })
 
 draw();
