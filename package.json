@@ -1,5 +1,5 @@
 {
-  "name": "borpaspin",
+  "name": "intro-example-threejs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,15 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/moonscreens/borpaspin.git"
+    "url": "git+https://github.com/moonscreens/intro-example-threejs.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/moonscreens/borpaspin/issues"
+    "url": "https://github.com/moonscreens/intro-example-threejs/issues"
   },
-  "homepage": "https://github.com/moonscreens/borpaspin#readme",
+  "homepage": "https://github.com/moonscreens/intro-example-threejs#readme",
   "dependencies": {
+    "html-webpack-plugin": "^5.3.2",
     "three": "^0.130.1",
     "twitch-chat-emotes": "^0.2.1",
     "webpack": "^5.44.0",
