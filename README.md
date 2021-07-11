@@ -1,4 +1,4 @@
-# 3D intro screen starter template
+# 3D intro screen
 A starter template for [Three.JS](https://threejs.org/) based intro screens.
 
 
