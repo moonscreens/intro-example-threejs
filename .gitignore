@@ -104,6 +104,4 @@ typings/
 
 package-lock.json
 
-dist/bundle.js
-dist/bundle.js.*
-dist/index.html
+dist

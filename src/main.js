@@ -1,3 +1,4 @@
+import './main.css';
 import * as THREE from "three";
 import Chat from 'twitch-chat-emotes';
 
