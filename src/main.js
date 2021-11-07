@@ -1,6 +1,10 @@
-import './main.css';
+import TwitchChat from "twitch-chat-emotes-threejs";
 import * as THREE from "three";
-import Chat from 'twitch-chat-emotes';
+import "./main.css";
+
+/*
+** connect to twitch chat
+*/
 
 // a default array of twitch channels to join
 let channels = ['moonmoon'];
@@ -15,107 +19,111 @@ if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
 }
 
-// create our chat instance
-const ChatInstance = new Chat({
+const ChatInstance = new TwitchChat({
+	// If using planes, consider using MeshBasicMaterial instead of SpriteMaterial
+	materialType: THREE.SpriteMaterial,
+
+	// Passed to material options
+	materialOptions: {
+		transparent: true,
+	},
+
 	channels,
-	duplicateEmoteLimit: 5,
-});
-
-const emoteSources = {};
-const emoteTextures = {};
-const emoteMaterials = {};
-
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.z = 10;
-
-const scene = new THREE.Scene();
-const renderer = new THREE.WebGLRenderer({
-	antialias: false,
-	alpha: false
-});
-document.body.appendChild(renderer.domElement);
-
-
-function resize() {
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-}
-resize();
-window.addEventListener('resize', resize);
-
-
-let lastFrame = Date.now();
-// Called once per frame
-function draw() {
-	window.requestAnimationFrame(draw);
-
-	// number of seconds since the last frame was drawn
-	const delta = (Date.now() - lastFrame) / 1000;
-
-	// update materials for animated emotes
-	for (const key in emoteMaterials) {
-		if (Object.hasOwnProperty.call(emoteMaterials, key)) {
-			emoteMaterials[key].needsUpdate = true;
-			emoteTextures[key].needsUpdate = true;
-		}
-	}
-
-	for (let index = emoteArray.length - 1; index >= 0; index--) {
-		const element = emoteArray[index];
-
-		// Emotes will travel either towards or away from the camera as a basic example
-		if (index % 2) {
-			element.position.z += delta;
-		} else {
-			element.position.z -= delta;
-		}
-
-		// Remove a given set of emotes after 10 seconds have passed
-		if (element.dateSpawned < Date.now() - 10000) {
-			scene.remove(element);
-			emoteArray.splice(index, 1);
-		}
-	}
-
-	renderer.render(scene, camera);
-
-	lastFrame = Date.now();
-}
-
-// add a callback function for when a new message with emotes is sent
-const emoteArray = [];
-ChatInstance.on("emotes", (emotes) => {
-	const group = new THREE.Group();
-
-	group.position.x = Math.random() * 5 - 2.5,
-		group.position.y = Math.random() * 5 - 2.5,
-		group.dateSpawned = Date.now()
-
-	for (let index = 0; index < emotes.length; index++) {
-		const emote = emotes[index];
-
-		// cache textures/materials to save on GPU bandwidth, otherwise a material would need to be generated for every unique use of the same emote
-		if (!emoteTextures[emote.id]) {
-			emoteSources[emote.id] = emote;
-			emoteTextures[emote.id] = new THREE.CanvasTexture(emote.gif.canvas);
-			emoteTextures[emote.id].emote = emote;
-
-			// Feel free to change this from a nearest neighbor upsampling method to match your visual style
-			emoteTextures[emote.id].magFilter = THREE.NearestFilter;
-
-			emoteMaterials[emote.id] = new THREE.SpriteMaterial({
-				map: emoteTextures[emote.id],
-				transparent: true,
-			});
-		}
-		const sprite = new THREE.Sprite(emoteMaterials[emote.id]);
-		sprite.position.x = index;
-
-		group.add(sprite);
-	}
-	scene.add(group);
-	emoteArray.push(group);
+	maximumEmoteLimit: 3,
 })
 
-draw();
+/*
+** Initiate ThreejS scene
+*/
+
+const camera = new THREE.PerspectiveCamera(
+	70,
+	window.innerWidth / window.innerHeight,
+	0.1,
+	1000
+);
+camera.position.z = 5;
+
+const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+function resize() {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+	window.addEventListener('resize', resize);
+	if (query_vars.stats) document.body.appendChild(stats.dom);
+	document.body.appendChild(renderer.domElement);
+	draw();
+})
+
+/*
+** Draw loop
+*/
+let lastFrame = Date.now();
+function draw() {
+	if (query_vars.stats) stats.begin();
+	requestAnimationFrame(draw);
+	const delta = (Date.now() - lastFrame) / 1000;
+
+
+	for (let index = sceneEmoteArray.length - 1; index >= 0; index--) {
+		const element = sceneEmoteArray[index];
+		element.position.addScaledVector(element.velocity, delta);
+		if (element.timestamp + element.lifespan < Date.now()) {
+			sceneEmoteArray.splice(index, 1);
+			scene.remove(element);
+		} else {
+			element.update();
+		}
+	}
+	lastFrame = Date.now();
+
+	renderer.render(scene, camera);
+	if (query_vars.stats) stats.end();
+};
+
+
+/*
+** Handle Twitch Chat Emotes
+*/
+const sceneEmoteArray = [];
+ChatInstance.listen((emotes) => {
+	const group = new THREE.Group();
+	group.lifespan = 5000;
+	group.timestamp = Date.now();
+
+	let i = 0;
+	emotes.forEach((emote) => {
+		const sprite = new THREE.Sprite(emote.material);
+		sprite.position.x = i;
+		group.add(sprite);
+		i++;
+	})
+
+	// Set velocity to a random normalized value
+	group.velocity = new THREE.Vector3(
+		(Math.random() - 0.5) * 2,
+		(Math.random() - 0.5) * 2,
+		(Math.random() - 0.5) * 2
+	);
+	group.velocity.normalize();
+
+	group.update = () => { // called every frame
+		let progress = (Date.now() - group.timestamp) / group.lifespan;
+		if (progress < 0.25) { // grow to full size in first quarter
+			group.scale.setScalar(progress * 4);
+		} else if (progress > 0.75) { // shrink to nothing in last quarter
+			group.scale.setScalar((1 - progress) * 4);
+		} else { // maintain full size in middle
+			group.scale.setScalar(1);
+		}
+	}
+
+	scene.add(group);
+	sceneEmoteArray.push(group);
+});
