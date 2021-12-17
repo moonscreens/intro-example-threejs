@@ -1,5 +1,6 @@
 import TwitchChat from "twitch-chat-emotes-threejs";
 import * as THREE from "three";
+import Stats from "stats-js";
 import "./main.css";
 
 /*
@@ -17,6 +18,13 @@ const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, func
 
 if (query_vars.channels) {
 	channels = query_vars.channels.split(',');
+}
+
+let stats = false;
+if (query_vars.stats) {
+	stats = new Stats();
+	stats.showPanel(1);
+	document.body.appendChild(stats.dom);
 }
 
 const ChatInstance = new TwitchChat({
@@ -56,7 +64,7 @@ function resize() {
 
 window.addEventListener('DOMContentLoaded', () => {
 	window.addEventListener('resize', resize);
-	if (query_vars.stats) document.body.appendChild(stats.dom);
+	if (stats) document.body.appendChild(stats.dom);
 	document.body.appendChild(renderer.domElement);
 	draw();
 })
@@ -66,7 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
 */
 let lastFrame = Date.now();
 function draw() {
-	if (query_vars.stats) stats.begin();
+	if (stats) stats.begin();
 	requestAnimationFrame(draw);
 	const delta = (Date.now() - lastFrame) / 1000;
 
@@ -84,7 +92,7 @@ function draw() {
 	lastFrame = Date.now();
 
 	renderer.render(scene, camera);
-	if (query_vars.stats) stats.end();
+	if (stats) stats.end();
 };
 
 
