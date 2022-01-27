@@ -24,7 +24,7 @@
 		"html-webpack-plugin": "^5.3.2",
 		"stats-js": "^1.0.1",
 		"style-loader": "^3.1.0",
-		"three": "^0.134.0",
+		"three": "^0.137.2",
 		"twitch-chat-emotes-threejs": "^0.3.0",
 		"webpack": "^5.44.0",
 		"webpack-cli": "^4.7.2"
