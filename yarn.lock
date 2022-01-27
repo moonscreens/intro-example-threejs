@@ -3114,11 +3114,6 @@ terser@^5.7.0:
     source-map "~0.7.2"
     source-map-support "~0.5.19"
 
-three@^0.130.1:
-  version "0.130.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.130.1.tgz#797588b2877ace31603bbbc864eb2e3022f0b3b4"
-  integrity sha512-OSPPKcGvFSiGkG3jFrwwC76PBV/ZSrGxpBbg28bW8s9GU8r/y2spNGtEXHEb/CVqo0Ctf5Lx2rVaxQZB6OasaA==
-
 three@^0.134.0:
   version "0.134.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.134.0.tgz#d7ad4d85d050da0861bf39749b06ddfb5f17157f"
@@ -3172,12 +3167,11 @@ tslib@^2.0.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
-twitch-chat-emotes-threejs@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/twitch-chat-emotes-threejs/-/twitch-chat-emotes-threejs-0.2.0.tgz#9566cbd7cd214cade174abf87036cbcf3d092558"
-  integrity sha512-6TH7UFtyVPvejVN/ujCHtsdE/hOLAUOo42PlKfaw7b3Z6os5RUYxu27rlLE9NK+hRm+kYctEwRnYz1JQtSscvg==
+twitch-chat-emotes-threejs@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/twitch-chat-emotes-threejs/-/twitch-chat-emotes-threejs-0.3.0.tgz#f310bc6778f7b5cb4f43bdbdb515e42799f8ec6d"
+  integrity sha512-R2ulrRomDIslMhxQGo2NcO9PCmnGofGSwfkmR0wsnthyteYYfh72S+LvjglfjBHj2CktsqwfQh7teYSDMVRLWQ==
   dependencies:
-    three "^0.134.0"
     twitch-chat-emotes "^0.2.2"
 
 twitch-chat-emotes@^0.2.2:
