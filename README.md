@@ -6,7 +6,6 @@ Include `?channel=moonmoon`, or `?channel=channel1,channel2,channel3...` in your
 Include `?stats=true` to enable performance stats (should pop up in the top left corner).
 
 # Development
-## npm
 ```
 npm install
 npm run start
