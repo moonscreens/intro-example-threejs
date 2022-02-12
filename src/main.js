@@ -74,11 +74,12 @@ window.addEventListener('DOMContentLoaded', () => {
 /*
 ** Draw loop
 */
-let lastFrame = Date.now();
+let lastFrame = performance.now();
 function draw() {
 	if (stats) stats.begin();
 	requestAnimationFrame(draw);
-	const delta = (Date.now() - lastFrame) / 1000;
+	const delta = Math.min(1, Math.max(0, (performance.now() - lastFrame) / 1000));
+	lastFrame = performance.now();
 
 
 	for (let index = sceneEmoteArray.length - 1; index >= 0; index--) {
@@ -91,7 +92,6 @@ function draw() {
 			element.update();
 		}
 	}
-	lastFrame = Date.now();
 
 	renderer.render(scene, camera);
 	if (stats) stats.end();
