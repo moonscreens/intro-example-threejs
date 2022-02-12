@@ -4,6 +4,8 @@ A starter template for [Three.JS](https://threejs.org/) based intro screens.
 Include `?channel=moonmoon`, or `?channel=channel1,channel2,channel3...` in your URL to connect to a specific channel, great for testing!
 
 Include `?stats=true` to enable performance stats (should pop up in the top left corner).
+
+# Development
 ## npm
 ```
 npm install
