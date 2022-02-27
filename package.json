@@ -18,6 +18,7 @@
 	},
 	"homepage": "https://github.com/moonscreens/intro-example-threejs#readme",
 	"dependencies": {
+		"copy-webpack-plugin": "^10.2.4",
 		"css-loader": "^6.6.0",
 		"file-loader": "^6.2.0",
 		"html-loader": "^3.1.0",

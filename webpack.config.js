@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 	entry: './src/main.js',
@@ -12,6 +13,11 @@ module.exports = {
 			template: './src/index.html',
 			filename: 'index.html',
 			hash: true,
+		}),
+		new CopyPlugin({
+			patterns: [
+				{ from: "static" },
+			],
 		}),
 	],
 	devServer: {
