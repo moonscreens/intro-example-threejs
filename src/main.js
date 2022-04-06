@@ -16,8 +16,9 @@ const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, func
 	query_vars[key] = value;
 });
 
-if (query_vars.channels) {
-	channels = query_vars.channels.split(',');
+if (query_vars.channels || query_vars.channel) {
+	const temp = query_vars.channels || query_vars.channel;
+	channels = temp.split(',');
 }
 
 let stats = false;
