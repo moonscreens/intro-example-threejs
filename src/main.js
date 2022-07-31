@@ -104,6 +104,10 @@ function draw() {
 */
 const sceneEmoteArray = [];
 ChatInstance.listen((emotes) => {
+
+	//prevent lag caused by emote buildup when you tab out from the page for a while
+	if (performance.now() - lastFrame > 1000) return;
+
 	const group = new THREE.Group();
 	group.lifespan = 5000;
 	group.timestamp = Date.now();
