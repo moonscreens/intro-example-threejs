@@ -29,8 +29,6 @@ if (query_vars.stats) {
 }
 
 const ChatInstance = new TwitchChat({
-	THREE,
-
 	// If using planes, consider using MeshBasicMaterial instead of SpriteMaterial
 	materialType: THREE.SpriteMaterial,
 
