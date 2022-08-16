@@ -24,4 +24,4 @@ npm run build
 ```
 Outputs static files to `/dist/`.
 
-Services like [Netlify](https://www.netlify.com/) have free tiers that can easilly deploy simple static webpages like this.
+Services like [Netlify](https://www.netlify.com/) have free tiers that can easily deploy simple static webpages like this.
