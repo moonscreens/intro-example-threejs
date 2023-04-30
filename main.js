@@ -1,7 +1,7 @@
 import TwitchChat from "twitch-chat-emotes-threejs";
 import * as THREE from "three";
-import Stats from "stats-js";
-import "./main.css";
+import Stats from 'three/examples/jsm/libs/stats.module'
+import "./style.css";
 
 /*
 ** connect to twitch chat
@@ -12,7 +12,7 @@ let channels = ['moonmoon'];
 
 // the following few lines of code will allow you to add ?channels=channel1,channel2,channel3 to the URL in order to override the default array of channels
 const query_vars = {};
-const query_parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 	query_vars[key] = value;
 });
 
@@ -35,6 +35,14 @@ const ChatInstance = new TwitchChat({
 	// Passed to material options
 	materialOptions: {
 		transparent: true,
+	},
+
+	textureHook: (texture) => {
+		//fix emotes looking washed out on new THREE.js versions
+		texture.encoding = THREE.sRGBEncoding;
+
+		//give a nice pixelated look when emotes are scaled up, but not down
+		texture.magFilter = THREE.NearestFilter;
 	},
 
 	channels,
