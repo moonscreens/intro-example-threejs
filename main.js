@@ -109,8 +109,7 @@ function draw() {
 ** Handle Twitch Chat Emotes
 */
 const sceneEmoteArray = [];
-ChatInstance.listen((emotes) => {
-
+const spawnEmote = (emotes) => {
 	//prevent lag caused by emote buildup when you tab out from the page for a while
 	if (performance.now() - lastFrame > 1000) return;
 
@@ -147,4 +146,19 @@ ChatInstance.listen((emotes) => {
 
 	scene.add(group);
 	sceneEmoteArray.push(group);
-});
+};
+
+ChatInstance.listen(spawnEmote);
+
+
+// spawn some fake emotes for testing purposes
+const placeholder_mats = [
+	new THREE.SpriteMaterial({ color: 0xff4444 }),
+	new THREE.SpriteMaterial({ color: 0x44ff44 }),
+	new THREE.SpriteMaterial({ color: 0x4444ff }),
+]
+setInterval(() => {
+	spawnEmote([{
+		material: placeholder_mats[	Math.floor(Math.random() * placeholder_mats.length)]
+	}]);
+}, 1000);
