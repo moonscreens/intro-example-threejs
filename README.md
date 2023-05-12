@@ -13,10 +13,10 @@ Include `?stats=true` to enable performance stats (should pop up in the top left
 Before you start, you should have [NodeJS](https://nodejs.org/en/) installed.
 ```
 npm install
-npm run start
+npm run dev
 ```
 
-After running `start`, open [localhost:5173](http://localhost:5173/). The page should automatically refresh when you make a change.
+After running `dev`, open [localhost:5173](http://localhost:5173/). The page should automatically refresh when you make a change.
 
 # Building & Deploying
 ```
