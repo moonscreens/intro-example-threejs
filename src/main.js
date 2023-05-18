@@ -39,7 +39,7 @@ const ChatInstance = new TwitchChat({
 
 	textureHook: (texture) => {
 		//fix emotes looking washed out on new THREE.js versions
-		texture.encoding = THREE.sRGBEncoding;
+		texture.colorSpace = THREE.SRGBColorSpace;
 
 		//give a nice pixelated look when emotes are scaled up, but not down
 		texture.magFilter = THREE.NearestFilter;
