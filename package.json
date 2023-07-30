@@ -9,10 +9,10 @@
 		"preview": "vite preview"
 	},
 	"devDependencies": {
-		"vite": "^4.3.2"
+		"vite": "^4.4.7"
 	},
 	"dependencies": {
-		"three": "^0.152.2",
+		"three": "^0.155.0",
 		"twitch-chat-emotes-threejs": "^0.4.1"
 	}
 }
