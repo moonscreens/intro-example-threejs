@@ -1,5 +1,5 @@
 # 3D intro screen
-A starter template for [Three.js](https://threejs.org/) based intro screens.
+A starter template for [Three.js](https://threejs.org/) based animations that tie in with users posting emotes through Twitch chat in real time
 
 > Confused? [Learn more about the project](https://github.com/moonscreens/info).
 
